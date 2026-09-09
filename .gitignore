@@ -5,3 +5,6 @@ logs/
 .env
 airflow/logs/
 airflow/config/simple_auth_manager_passwords.json
+job-tracker-iam_accessKeys.csv
+__pycache__/
+*.py[cod]
