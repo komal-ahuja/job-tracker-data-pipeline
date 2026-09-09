@@ -1,5 +1,7 @@
-
+.venv/
 target/
 dbt_packages/
 logs/
 .env
+airflow/logs/
+airflow/config/simple_auth_manager_passwords.json

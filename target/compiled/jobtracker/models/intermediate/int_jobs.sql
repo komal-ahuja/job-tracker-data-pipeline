@@ -3,6 +3,8 @@
 With int_jobs as (
     Select * from JOB_DB.STAGING.stg_jobs
 
+where source_ingest_timestamp > (Select max(scraped_at) from JOB_DB.INTERMEDIATE.int_jobs)
+
 )
 Select 
 -- job_uid is not globally unique across all jobs.
