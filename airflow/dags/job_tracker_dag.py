@@ -3,7 +3,7 @@ from airflow.providers.amazon.aws.operators.lambda_function import LambdaInvokeF
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 from cosmos import DbtTaskGroup, ProjectConfig, ProfileConfig, ExecutionConfig
 from cosmos.profiles import SnowflakeUserPasswordProfileMapping
-from airflow.operators.python import PythonOperator
+from airflow.sensors.python import PythonSensor
 import time
 import json
 from airflow.models import Variable
@@ -27,9 +27,6 @@ dag = DAG(
     schedule=None, 
     catchup=False)
 
-
-
-
 def wait_for_snowflake_data(**kwargs):
     """
     Waits for data to be available in Snowflake before proceeding.
@@ -42,31 +39,21 @@ def wait_for_snowflake_data(**kwargs):
     body = json.loads(lambda_response["body"])
     filenames = body["objects"]
 
-    for filename in filenames:
-        print(f"files expected in Snowflake: {filename}")
+    if not filenames:
+        print("No new files to wait for.")
+        return True
 
     # Snowflake connection
     hook = SnowflakeHook(snowflake_conn_id='snowflake_conn')
 
-    elapsed_time = 0
-    max_wait_time = 600  # Maximum wait time in seconds (10 minutes)
-    poll_interval = 30  # Polling interval in seconds
+    placeholders = ', '.join(["%s"] * len(filenames))
+    query = f"""Select filename from JOB_DB.RAW.RAW_JOBS_API where filename in ({placeholders})"""
+    records = hook.get_records(query, parameters=filenames)
+    loaded_filenames = [record[0] for record in records]
+    print(f"Snowflake has loaded {len(loaded_filenames)}/{len(filenames)} expected files.")
 
-    while elapsed_time < max_wait_time:
-        placeholders = ', '.join(["%s"] * len(filenames))
-        query = f"""Select filename from JOB_DB.RAW.RAW_JOBS_API where filename in ({placeholders})"""
-        records = hook.get_records(query, parameters=filenames)
-        print(f"Records found in Snowflake: {records}")
-        loaded_filenames = [record[0] for record in records]
-        print(f"Snowflake has loaded {len(loaded_filenames)}/{len(filenames)} expected files.")
-        if set(loaded_filenames) == set(filenames):
-            print("All expected files are loaded in Snowflake.")
-            return
-        print(f"Waiting {poll_interval} seconds for Snowpipe...")
-        time.sleep(poll_interval)
-        elapsed_time += poll_interval
-
-    raise TimeoutError(f"Timeout: Not all expected files were loaded in Snowflake within {max_wait_time} seconds.")
+    return set(loaded_filenames) == set(filenames)
+       
        
 
 dbt_transformations = DbtTaskGroup(
@@ -94,9 +81,12 @@ lambda_invoke_task = LambdaInvokeFunctionOperator(
     dag=dag
 )
 
-wait_for_snowflake_task = PythonOperator(
+wait_for_snowflake_task = PythonSensor(
     task_id='wait_for_snowflake_data',
     python_callable=wait_for_snowflake_data,
+    mode='reschedule',
+    poke_interval=30,
+    timeout=600,
     dag=dag
 )
 
