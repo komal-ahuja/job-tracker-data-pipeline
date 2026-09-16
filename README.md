@@ -1,8 +1,8 @@
 # Job Tracker Data Pipeline
 
-An end-to-end cloud data engineering pipeline that extracts live job postings from the JSearch API (hosted by OpenWebNinja), lands raw data in Amazon S3, auto-ingests it into Snowflake via Snowpipe, and transforms it with dbt into analytics-ready models for viewing the percentage of skills appearing across Data Engineer / Analytics Engineer / BI Engineer job postings.
+An end-to-end cloud data engineering pipeline that extracts live job postings from the JSearch API (hosted by OpenWebNinja), lands raw data in Amazon S3, auto-ingests it into Snowflake via Snowpipe, and transforms it with dbt into analytics-ready models for viewing the percentage of skills appearing across Data Engineer / Analytics Engineer job postings.
 
-**Stack:** AWS Lambda · Amazon S3 · Snowflake · Snowpipe · dbt · Python · Airflow (planned)
+**Stack:** AWS Lambda · Amazon S3 · Snowflake · Snowpipe · dbt · Python · Airflow (orchestration)
 
 ## Overview
 
@@ -13,6 +13,16 @@ The pipeline is designed to accumulate history across ingestion runs (not a one-
 ## Architecture
 
 See [docs/architecture.md](docs/architecture.md) for the full pipeline diagram, materialization strategy (view / incremental / table), and design rationale for the ingestion and transformation layers.
+
+## Orchestration
+
+The pipeline is orchestrated end-to-end with **Apache Airflow**, running in Docker. A single DAG (`job_tracker_dag`) chains the full ELT flow:
+
+1. **`invoke_lambda_function`** — triggers the ingestion Lambda, which pulls job postings from the JSearch API and writes raw JSON to S3
+2. **`wait_for_snowflake_data`** — a custom sensor that polls Snowflake's raw table until Snowpipe has finished auto-ingesting the files from step 1, rather than assuming a fixed delay
+3. **`dbt_transformations`** — a `DbtTaskGroup` (via [astronomer-cosmos](https://github.com/astronomer/astronomer-cosmos)) that runs the full staging → intermediate → marts dbt DAG as native Airflow tasks, giving per-model visibility/retries in the Airflow UI rather than a single opaque `dbt run` shell call
+
+This design accounts for Snowpipe's asynchronous, event-driven ingestion — the DAG doesn't proceed to transformation until the expected files are confirmed present in the raw table, avoiding race conditions between load and transform.
 
 ## Data Source
 
@@ -170,12 +180,13 @@ fact grain is one row per posting *per scrape*, not per posting.
    dbt run
    dbt test
    ```
+5. Start the Airflow environment (`docker compose up`) and trigger `job_tracker_dag`, or configure a schedule for recurring runs.
 
 ## Future Enhancements
 
-- Add Airflow scheduler for recurring extraction + dbt runs
 - Extend analyses to use `DIM_COMPANIES` and `DIM_LOCATIONS`
 - Add avg_time_role_active analysis (posting active-duration, using int_jobs scrape history) — blocked this month by API quota, to resume once quota resets
+- Add Airflow scheduling (currently manually triggered; `schedule=None`) once ready to run on a recurring cadence
 
 ---
 
