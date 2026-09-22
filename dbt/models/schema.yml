@@ -1,6 +1,25 @@
 version: 2
 
 models:
+
+  - name: stg_jobs
+    description: "Staged jobs from the JSearch API."
+    columns:
+    - name: job_id
+      tests:
+        - not_null
+
+    - name: job_uid
+      tests:
+        - not_null
+
+    - name: job_title
+      tests:
+        - not_null
+
+    - name: employer_name
+      tests:
+        - not_null
   
   - name: dim_skills
     columns:
@@ -8,39 +27,105 @@ models:
         tests:
           - unique
           - not_null
-
       - name: skill_name
         tests:
+          - unique
           - not_null
-
       - name: skill_category
         tests:
           - not_null
-  - name: stg_jobs
-    description: "Staged jobs from the JSearch API."
+
+  - name: bridge_job_skills
+    description: Bridge table linking job postings to extracted skills.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - job_posting_sk
+              - skill_sk
     columns:
-      - name: job_id
-        description: "Unique identifier for the job posting."
+      - name: job_posting_sk
         tests:
           - not_null
-
-      - name: job_uid
-        description: "Alternate unique identifier provided by the API."
+      - name: skill_sk
         tests:
           - not_null
-
-      - name: job_title
-        description: "Job title"
-        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_skills')
+                field: skill_sk
+  - name: dim_employer
+    columns:
+      - name: employer_sk
+        tests: 
+          - unique
           - not_null
-
       - name: employer_name
-        description: "Employer offering the job."
+        tests:
+          - unique
+          - not_null
+  - name: dim_location
+    columns:
+      - name: location_sk
+        description: "Surrogate key generated from job_city, job_state, job_country"
+        tests:
+          - unique
+          - not_null
+      - name: job_city
+        description: "City or 'Unknown' if not provided"
         tests:
           - not_null
+      - name: job_state
+        tests:
+          - not_null
+
+      - name: job_country
+        tests:
+          - not_null
+
+  - name: fct_job_postings_snapshot
+    tests: 
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - job_posting_sk
+              - scraped_at
+    columns:
+    - name: fct_job_postings_sk
+      description:  Surrogate key generated from job_posting_sk and scraped_at.
+      tests:
+        - unique
+        - not_null
+    - name: job_posting_sk
+      description: "Logical job identifier generated from job_uid and employer_name."
+      tests:
+        - not_null
+    - name: employer_sk
+      description: "FK to dim_employer, falls back to normalized 'Unknown' key when no employer match."
+      tests:
+        - not_null
+        - relationships:
+            arguments:
+              to: ref('dim_employer')
+              field: employer_sk
+
+    - name: location_sk
+      description: "FK to dim_location, falls back to 'Unknown'/'Unknown'/'Unknown' key when no location match."
+      tests:
+        - not_null
+        - relationships:
+            arguments:
+              to: ref('dim_location')
+              field: location_sk
 
 seeds:
   - name: skill_lookup
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - skill_name
+              - match_text
     columns:
       - name: skill_name
         tests:

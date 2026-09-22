@@ -1,5 +1,17 @@
+{{
+    config(
+        materialized = 'incremental',
+        unique_key = ['job_uid', 'employer_name', 'scraped_at'],
+        incremental_strategy = 'merge',
+        on_schema_change = 'append_new_columns'
+    )
+}}
+
 With int_jobs as (
     Select * from {{ref('stg_jobs')}}
+{%if is_incremental() %}
+where source_ingest_timestamp > (Select max(scraped_at) from {{this}})
+{% endif %}
 )
 Select 
 -- job_uid is not globally unique across all jobs.
@@ -11,7 +23,7 @@ Select
 --
 -- Therefore this combination is used to generate job_sk.
 
-{{dbt_utils.generate_surrogate_key(['job_uid', 'employer_name'])}} as job_sk,
+{{dbt_utils.generate_surrogate_key(['job_uid', 'employer_name'])}} as job_posting_sk,
 job_uid,
 job_id,                 
 employer_name,
@@ -38,5 +50,6 @@ from int_jobs
 QUALIFY ROW_NUMBER() OVER (
     PARTITION BY 
         job_uid, 
-        employer_name
-    order by source_ingest_timestamp desc) = 1
+        employer_name,
+        source_ingest_timestamp
+    order by job_publisher desc) = 1

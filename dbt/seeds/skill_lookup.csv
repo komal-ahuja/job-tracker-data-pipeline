@@ -1,98 +1,98 @@
-skill_category,skill_name,match_text
-Programming Language,Python,python
-Programming Language,SQL,sql
-Programming Language,Java,java
-Programming Language,Scala,scala
-Programming Language,R,r
-Programming Language,Go,go
-Programming Language,Go,golang
-Programming Language,Bash,bash
-Programming Language,Bash,shell
-Data Warehouse,Snowflake,snowflake
-Data Warehouse,Snowflake,snowflake data cloud
-Data Warehouse,Redshift,redshift
-Data Warehouse,BigQuery,bigquery
-Data Warehouse,BigQuery,big query
-Data Warehouse,Synapse,synapse
-Data Warehouse,Synapse,azure synapse
-Data Warehouse,Databricks,databricks
-ETL / ELT,dbt,dbt
-ETL / ELT,dbt,dbt cloud
-ETL / ELT,Airflow,airflow
-ETL / ELT,Apache Airflow,apache airflow
-ETL / ELT,Fivetran,fivetran
-ETL / ELT,Informatica,informatica
-ETL / ELT,Talend,talend
-ETL / ELT,SSIS,ssis
-ETL / ELT,Matillion,matillion
-Cloud,AWS,aws
-Cloud,AWS,amazon web services
-Cloud,Azure,azure
-Cloud,Microsoft Azure,microsoft azure
-Cloud,GCP,gcp
-Cloud,GCP,google cloud
-Cloud,GCP,google cloud platform
-Storage,S3,s3
-Storage,ADLS,adls
-Storage,ADLS,azure data lake
-Storage,ADLS,azure data lake storage
-Storage,Blob Storage,azure blob
-Storage,Blob Storage,blob storage
-Streaming,Kafka,kafka
-Streaming,Apache Kafka,apache kafka
-Streaming,Kinesis,kinesis
-Streaming,Spark Streaming,spark streaming
-Big Data,Spark,spark
-Big Data,Apache Spark,apache spark
-Big Data,Hadoop,hadoop
-Big Data,Hive,hive
-Database,PostgreSQL,postgres
-Database,PostgreSQL,postgresql
-Database,SQL Server,sql server
-Database,SQL Server,mssql
-Database,Oracle,oracle
-Database,MySQL,mysql
-Database,MongoDB,mongodb
-Analytics,Power BI,power bi
-Analytics,Power BI,pbi
-Analytics,Tableau,tableau
-Analytics,Looker,looker
-Analytics,Excel,excel
-Analytics,Sigma,sigma
-Data Modeling,Kimball,kimball
-Data Modeling,Star Schema,star schema
-Data Modeling,Dimensional Modeling,dimensional modeling
-Data Modeling,Data Vault,data vault
-Data Modeling,Schema Design,schema design
-Data Governance,Data Governance,data governance
-Data Governance,Data Contracts,data contract
-Data Governance,DataContracts,data contracts
-Data Governance,RBAC,rbac
-Data Governance,RBAC,role based access control
-Data Governance,RBAC,role-based access control
-DevOps,Git,git
-DevOps,GitHub Actions,github actions
-DevOps,GitHub Actions,gha
-DevOps,Docker,docker
-DevOps,Kubernetes,kubernetes
-DevOps,Kubernetes,k8s
-DevOps,Terraform,terraform
-DevOps,CI/CD,ci/cd
-DevOps,CI/CD,continuous integration
-DevOps,CI/CD,continuous delivery
-API,REST API,rest api
-API,REST API,restful api
-API,REST API,restful
-API,JSON,json
-API,XML,xml
-Data Quality,Great Expectations,great expectations
-Data Quality,Monte Carlo,monte carlo
-Testing,Data Quality,data quality
-Testing,dbt Tests,dbt tests
-Testing,dbt Tests,writing tests
-Documentation,Documentation,documentation
-Soft Skill,Communication,communication
-Soft Skill,Problem Solving,problem solving
-Soft Skill,Collaboration,collaboration
-Soft Skill,Stakeholder Management,stakeholder
-Soft Skill,Stakeholder Management,stakeholder management
+skill_category,skill_name,match_text,match_type
+Programming Language,Python,python,standard
+Programming Language,SQL,sql,standard
+Programming Language,Java,java,standard
+Programming Language,Scala,scala,standard
+Programming Language,R,R,contextual
+Programming Language,Go,Go,contextual
+Programming Language,Go,golang,standard
+Programming Language,Bash,bash,standard
+Programming Language,Bash,shell,standard
+Data Warehouse,Snowflake,snowflake,standard
+Data Warehouse,Snowflake,snowflake data cloud,standard
+Data Warehouse,Redshift,redshift,standard
+Data Warehouse,BigQuery,bigquery,standard
+Data Warehouse,BigQuery,big query,standard
+Data Warehouse,Synapse,synapse,standard
+Data Warehouse,Synapse,azure synapse,standard
+Data Warehouse,Databricks,databricks,standard
+ETL / ELT,dbt,dbt,standard
+ETL / ELT,dbt,dbt cloud,standard
+ETL / ELT,Airflow,airflow,standard
+ETL / ELT,Airflow,apache airflow,standard
+ETL / ELT,Fivetran,fivetran,standard
+ETL / ELT,Informatica,informatica,standard
+ETL / ELT,Talend,talend,standard
+ETL / ELT,SSIS,ssis,standard
+ETL / ELT,Matillion,matillion,standard
+Cloud,AWS,aws,standard
+Cloud,AWS,amazon web services,standard
+Cloud,AWS,s3,standard
+Cloud,Azure,azure,standard
+Cloud,Azure,microsoft azure,standard
+Cloud,Azure,adls,standard
+Cloud,Azure,azure data lake,standard
+Cloud,Azure,azure data lake storage,standard
+Cloud,Azure,azure blob,standard
+Cloud,Azure,blob storage,standard
+Cloud,GCP,gcp,standard
+Cloud,GCP,google cloud,standard
+Cloud,GCP,google cloud platform,standard
+Streaming,Kafka,kafka,standard
+Streaming,Kafka,apache kafka,standard
+Streaming,Kinesis,kinesis,standard
+Streaming,Spark Streaming,spark streaming,standard
+Big Data,Spark,spark,standard
+Big Data,Spark,apache spark,standard
+Big Data,Hadoop,hadoop,standard
+Big Data,Hive,hive,standard
+Database,PostgreSQL,postgres,standard
+Database,PostgreSQL,postgresql,standard
+Database,SQL Server,sql server,standard
+Database,SQL Server,mssql,standard
+Database,Oracle,oracle,standard
+Database,MySQL,mysql,standard
+Database,MongoDB,mongodb,standard
+Analytics,Power BI,power bi,standard
+Analytics,Power BI,pbi,standard
+Analytics,Tableau,tableau,standard
+Analytics,Looker,looker,standard
+Analytics,Excel,excel,standard
+Analytics,Sigma,sigma,standard
+Data Modeling,Dimensional Modeling,kimball,standard
+Data Modeling,Dimensional Modeling,star schema,standard
+Data Modeling,Dimensional Modeling,dimensional modeling,standard
+Data Modeling,Data Vault,data vault,standard
+Data Modeling,Schema Design,schema design,standard
+Data Governance,Data Governance,data governance,standard
+Data Governance,Data Contracts,data contract,standard
+Data Governance,Data Contracts,data contracts,standard
+Data Governance,RBAC,rbac,standard
+Data Governance,RBAC,role based access control,standard
+Data Governance,RBAC,role-based access control,standard
+DevOps,Git,git,standard
+DevOps,GitHub Actions,github actions,standard
+DevOps,GitHub Actions,gha,standard
+DevOps,Docker,docker,standard
+DevOps,Kubernetes,kubernetes,standard
+DevOps,Kubernetes,k8s,standard
+DevOps,Terraform,terraform,standard
+DevOps,CI/CD,ci/cd,standard
+DevOps,CI/CD,continuous integration,standard
+DevOps,CI/CD,continuous delivery,standard
+API,REST API,rest api,standard
+API,REST API,restful api,standard
+API,REST API,restful,standard
+API,JSON,json,standard
+API,XML,xml,standard
+Data Quality,Great Expectations,great expectations,standard
+Data Quality,Monte Carlo,monte carlo,standard
+Testing,Data Quality,data quality,standard
+Testing,dbt Tests,dbt tests,standard
+Testing,dbt Tests,writing tests,standard
+Documentation,Documentation,documentation,standard
+Soft Skill,Communication,communication,standard
+Soft Skill,Problem Solving,problem solving,standard
+Soft Skill,Collaboration,collaboration,standard
+Soft Skill,Stakeholder Management,stakeholder,standard
+Soft Skill,Stakeholder Management,stakeholder management,standard

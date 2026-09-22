@@ -36,6 +36,7 @@ SELECT
     job:job_title::STRING AS job_title,
     job:job_publisher::STRING AS job_publisher,
     job:employer_name::STRING AS employer_name,
+   
     job:job_description::STRING AS job_description,
 
     -- Location
